@@ -46,7 +46,6 @@
     # # "Hello, world!" when run.
     # pkgs.hello
     pkgs.google-chrome
-    home.packages = [
     pkgs.ibm-plex
     pkgs.ripgrep
     pkgs.nodejs_23
