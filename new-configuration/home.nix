@@ -15,6 +15,28 @@
   # release notes.
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
+    programs.emacs = {
+    enable = true;
+    package = pkgs.emacs;
+    extraPackages = epkgs: [
+        epkgs.magit
+	      epkgs.company
+	      epkgs.company-quickhelp
+	      epkgs.treesit-grammars.with-all-grammars
+	      epkgs.nix-mode
+        epkgs.haskell-mode
+        epkgs.lsp-haskell
+        epkgs.lsp-mode
+        epkgs.lsp-ui
+	      epkgs.json-mode
+        epkgs.consult
+        epkgs.beacon
+        epkgs.doom-modeline
+        epkgs.nerd-icons
+        epkgs.dashboard
+    ];
+  };
+
   nixpkgs.config.allowUnfree = true;
 
   # The home.packages option allows you to install Nix packages into your
@@ -22,8 +44,12 @@
   home.packages = [
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
-    pkgs.hello
+    # pkgs.hello
     pkgs.google-chrome
+    home.packages = [
+    pkgs.ibm-plex
+    pkgs.ripgrep
+    pkgs.nodejs_23
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
