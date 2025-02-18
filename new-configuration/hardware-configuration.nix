@@ -36,16 +36,22 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   hardware = {
+    opengl.enable = true;
     graphics = {
       enable = lib.mkDefault true;
       enable32Bit = lib.mkDefault true;
     };
     nvidia = {
       modesetting.enable = lib.mkDefault true;
-      prime = {
-        intelBusId = lib.mkDefault "PCI:0:2:0";
-        nvidiaBusId = lib.mkDefault "PCI:1:0:0";
-      };
+      powerManagement.enable = true;
+      # powerManagement.finegrained = true;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
+          
+      open = true;
+      nvidiaSettings = true;
     };
   };
+  boot.blacklistedKernelModules = [ "i915" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest; # Asegura que usas los módulos más recientes
+    
 }

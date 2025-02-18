@@ -8,10 +8,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    xmonad-contrib.url = github:xmonad/xmonad-contrib;
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
+  outputs = { self, nixpkgs, xmonad-contrib, ... }@inputs: {
     nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
       specialArgs = {inherit inputs;};
       modules = [
         {

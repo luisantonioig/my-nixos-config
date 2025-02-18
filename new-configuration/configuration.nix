@@ -18,6 +18,12 @@
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
+  
+  environment.variables = {
+    __NV_PRIME_RENDER_OFFLOAD = "1";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  };
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Configure network proxy if necessary
@@ -33,12 +39,69 @@
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # services.xserver.windowManager.xmonad = {
+  #   #enable = true;
+  #   #enableContribAndExtras = true;
+  #   flake = {
+  #     # enable = true;
+  #   # prefix = "unstable";
+  #     #compiler = "ghc924";
+  #   };
+  # };
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+
+  
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.modesetting.enable = true;
+  programs.hyprland.enable = true;
+
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport32Bit = true;
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+  # services.xserver.windowManager.xmonad = {
+  #   enable = true;
+  #   enableContribAndExtras = true;
+  #   config = ''
+  #     import XMonad
+  #     import XMonad.Util.EZConfig (additionalKeys)
+  #     import Control.Monad (when)
+  #     import Text.Printf (printf)
+  #     import System.Posix.Process (executeFile)
+  #     import System.Info (arch,os)
+  #     import System.Environment (getArgs)
+  #     import System.FilePath ((</>))
+  
+  #     compiledConfig = printf "xmonad-%s-%s" arch os
+  
+  #     myConfig = defaultConfig
+  #       { terminal = "kitty" }
+  #       `additionalKeys`
+  #       [ ( (mod4Mask,xK_r), compileRestart True)
+  #       , ( (mod4Mask,xK_q), restart "xmonad" True ) ]
+  
+  #     compileRestart resume = do
+  #       dirs  <- asks directories
+  #       whenX (recompile dirs True) $ do
+  #         when resume writeStateToFile
+  #         catchIO
+  #             ( do
+  #                 args <- getArgs
+  #                 executeFile (cacheDir dirs </> compiledConfig) False args Nothing
+  #             )
+  
+  #     main = getDirectories >>= launch myConfig
+  #     '';
+  #   # flake = {
+  #   #   enable = true;
+  #   # # prefix = "unstable";
+  #   #   compiler = "ghc";
+  #   # };
+  # };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -53,7 +116,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -85,6 +148,7 @@
     users = {
       "antonio" = import ./home.nix;
     };
+    backupFileExtension = "backup";
   };
 
   # Install firefox.
@@ -97,6 +161,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
+    libglvnd
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
   ];
